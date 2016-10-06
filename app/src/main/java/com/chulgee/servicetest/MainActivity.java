@@ -3,6 +3,7 @@ package com.chulgee.servicetest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +15,24 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     MyService mMyService;
     boolean mBound;
+    MyProgress myProgress;
+    Handler mHandler = new Handler();
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        myProgress = (MyProgress)findViewById(R.id.my_progress);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                count+=10;
+                Log.v(TAG, "count="+count);
+                myProgress.setCurVal(count);
+                mHandler.postDelayed(this, 5000);
+            }
+        },5000);
         Intent i = new Intent();
         i.setClass(this, MyService.class);
         startService(i);
